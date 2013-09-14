@@ -1,0 +1,28 @@
+body {
+  width: 700px;
+  margin: 0 auto;
+  padding-top: 20px;
+  padding-bottom: 20px;
+}
+
+header {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+header h3 {
+  color: #999;
+  margin-top: 0;
+  margin-bottom: 0;
+  line-height: 40px;
+  padding-bottom: 19px;
+}
+
+#container {
+  padding: 15px 0 15px 0;
+}
+
+footer {
+  padding-top: 19px;
+  color: #777;
+  border-top: 1px solid #e5e5e5;
+}
