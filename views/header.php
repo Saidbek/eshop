@@ -1,28 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>Some title</title>
-
+	<title>Demo</title>
 	<link rel="stylesheet" type="text/css" href="<?php echo URL; ?>public/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo URL; ?>public/css/style.css">
+	<script type="text/javascript" src="<?php echo URL; ?>public/js/jquery-1.10.2.min.js"></script>
+	<script type="text/javascript" src="<?php echo URL; ?>public/js/bootstrap.js"></script>
+	<script type="text/javascript" src="<?php echo URL; ?>public/js/bootstrap.min.js"></script>
+	
+	<script>
+	</script>
 </head>
 <body>
 
-<?php 
-	$directoryURI = $_SERVER['REQUEST_URI'];
-	$path = parse_url($directoryURI, PHP_URL_PATH);
-	$components = explode('/', $path);
-	$second_part = $components[2];
-?>
+<div id="wrapper">
+	<header>
+		<div class="cart">
+			<strong>Your shopping cart</strong>
 
-<header>
-	<ul class="nav nav-pills pull-right">
-    <li class="<?php if ($second_part == "" || $second_part == "index") {echo "active"; } else  {echo "noactive";}?>"><a href="<?php echo URL; ?>index">Home</a></li>
-    <li class="<?php if ($second_part == "help") {echo "active"; } else  {echo "noactive";}?>"><a href="<?php echo URL; ?>help">Help</a></li>
-    <li class="<?php if ($second_part == "login") {echo "active"; } else  {echo "noactive";}?>"><a href="<?php echo URL; ?>login">Login</a></li>
-  </ul>
+			<div class="items">
+				<?php echo Controller::showCart(); ?><?php ?>
+			</div>
+		</div>
 
-	<h3><a href="<?php echo URL ?>">eShop</a></h3>
-</header>
+		<h3><a href="<?php echo URL ?>">eShop</a></h3>	
+	</header>
 
-<div id="container">
+	<div id="container">
