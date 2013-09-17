@@ -99,10 +99,8 @@ class Index_Model extends Model {
 	}
 
 	function generate_signature($params) {
-		$secret_key = SECRET_KEY;
 		$normalized_string = $this->normalized_data($params);
-		$message = hash('sha256', $secret_key, $normalized_string);
-		return base64_encode($message);
+		return base64_encode(hash_hmac('sha256', $normalized_string, SECRET_KEY, true));
 	}
 
 	function delete($id) {
