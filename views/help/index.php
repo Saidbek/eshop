@@ -1,4 +1,4 @@
-<h4><?php echo $this->msg; ?></h4>
+<h4 class="text-primary"><?php echo $this->msg; ?></h4>
 
 <p>
   Nullam quis risus eget urna mollis ornare vel eu leo. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Nullam id dolor id nibh ultricies vehicula.

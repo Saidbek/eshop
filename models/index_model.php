@@ -90,7 +90,8 @@ class Index_Model extends Model {
 
 	function normalized_data($params) {
 		$request_uri = AUTH_URL."customer/authorizations";
-		$host = parse_url($request_uri)['host'];
+        $uri = parse_url($request_uri);
+		$host = $uri['host'].':'.$uri['port'];
 		$verb = 'POST';
 		$encoded_string = http_build_query($params);
 
@@ -100,7 +101,8 @@ class Index_Model extends Model {
 
 	function normalized_data_execute($transaction_number, $attributes) {
 		$request_uri = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
-		$host = parse_url($request_uri)['host'];
+        $uri = parse_url($request_uri);
+		$host = $uri['host'].':'.$uri['port'];
 		$date = gmdate("D, j M Y G:i:s")." GMT";
 		$verb = 'PUT';
 		$body = json_encode($attributes);

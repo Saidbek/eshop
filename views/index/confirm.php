@@ -1,4 +1,4 @@
-<h4><?php echo $this->description; ?></h4>
+<h4 class="text-primary"><?php echo $this->description; ?></h4>
 
 <table class="table table-hover">
 	<thead>

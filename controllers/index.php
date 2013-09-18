@@ -35,52 +35,12 @@ class Index extends Controller {
 	}
 
 	function confirm () {
-		$abandon_url = $_POST['abandon_url'];
-		$geopay_id_token = $_POST['geopay_id_token'];
-		$locale = $_POST['locale'];
-		$payment_details_description = $_POST['payment_details']['description'];
-		$payment_details_shipping = $_POST['payment_details']['shipping'];
-		$payment_details_subtotal = $_POST['payment_details']['subtotal'];
-		$payment_details_tax = $_POST['payment_details']['tax'];
-		$phone_number = $_POST['phone_number'];
-		$reference_number = $_POST['reference_number'];
-		$return_url = $_POST['return_url'];
-		$transaction_amount = $_POST['transaction_amount'];
-
-		$params = array(
-			"abandon_url"=>$abandon_url,
-			"geopay_id_token"=>$geopay_id_token,
-			"locale"=>$locale,
-			"payment_details"=>
-				array(
-					"description"=>$payment_details_description,
-					"items" => array(),
-					"shipping"=>$payment_details_shipping,"subtotal"=>$payment_details_subtotal,"tax"=>$payment_details_tax,
-			),
-			"phone_number"=>$phone_number,
-			"reference_number"=>$reference_number,
-			"return_url"=>$return_url,
-			"transaction_amount"=>$transaction_amount
-		);
-
-		$amounts = $_POST['a'];
-		$descs = $_POST['d'];
-		$merged = array();
-		$i = 0;
-
-		foreach ($amounts as $k=>$v)
-		{
-			$merged[$i]['amount'] = $v;
-
-			if (isset($descs[$k]))
-			{
-				$merged[$i++]['description'] = $descs[$k];
-			}
-		}
-
-		$params['payment_details']['items'] = $merged;
+        $params = $this->construct_hash($_POST);
+        // normalize $params
 		$normalized_string = $this->model->normalized_data($params);
+        // generate signature
 		$this->view->geopay_signature = $this->model->generate_signature($normalized_string);
+        // pass values to view
 		$this->view->description = $this->model->description();
 		$this->view->params = $params;
 		$this->view->render('index/confirm');
@@ -131,4 +91,39 @@ class Index extends Controller {
 		$this->view->query_string = $_SERVER['QUERY_STRING'];
 		$this->view->render('index/success');
 	}
+
+    private function construct_hash($array) {
+        $params = array(
+            "abandon_url"=>$array['abandon_url'],
+            "geopay_id_token"=>$array['geopay_id_token'],
+            "locale"=>$array['locale'],
+            "payment_details"=>
+            array(
+                "description"=>$array['payment_details']['description'],
+                "items" => array(),
+                "shipping"=>$array['payment_details']['shipping'],
+                "subtotal"=>$array['payment_details']['subtotal'],
+                "tax"=>$array['payment_details']['tax']
+            ),
+            "phone_number"=>$array['phone_number'],
+            "reference_number"=>$array['reference_number'],
+            "return_url"=>$array['return_url'],
+            "transaction_amount"=>$array['transaction_amount']
+        );
+
+        $amounts = $_POST['a'];
+        $descs = $_POST['d'];
+        $merged = array();
+        $i = 0;
+
+        foreach ($amounts as $k=>$v) {
+            $merged[$i]['amount'] = $v;
+            if (isset($descs[$k])) {
+                $merged[$i++]['description'] = $descs[$k];
+            }
+        }
+
+        $params['payment_details']['items'] = $merged;
+        return $params;
+    }
 }

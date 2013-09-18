@@ -1,7 +1,16 @@
 	</div>
 
 	<footer>
-		<p>(c) Company 2013</p>
+        <div class="company">
+            <p>© Online e-shop</p>
+        </div>
+
+        <div class="links">
+            <p>
+                <a href="<?php echo URL; ?>">Main page</a> |
+                <a href="<?php echo URL; ?>help">Help</a>
+            </p>
+        </div>
 	</footer>
 
 </div>

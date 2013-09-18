@@ -1,4 +1,4 @@
-<h4>Our products</h4>
+<h4 class="text-primary">Our products</h4>
 
 <table class="table table-hover">
   <thead>

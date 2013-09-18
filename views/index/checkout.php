@@ -1,4 +1,4 @@
-<h4>Checkout</h4>
+<h4 class="text-primary">Checkout</h4>
 
 <table class="table">
 	<thead>
