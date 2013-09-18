@@ -63,16 +63,22 @@ class Index extends Controller {
 			"transaction_amount"=>$transaction_amount
 		);
 
-		foreach($_POST['d'] as $d) {
-			$foo = array(array(
-				"amount" => 21,
-				"description" => $d
-			));
+		$amounts = $_POST['a'];
+		$descs = $_POST['d'];
+		$merged = array();
+		$i = 0;
 
-			foreach($foo as $f) {
-				$params['payment_details']['items'][] = $f;
+		foreach ($amounts as $k=>$v)
+		{
+			$merged[$i]['amount'] = $v;
+
+			if (isset($descs[$k]))
+			{
+				$merged[$i++]['description'] = $descs[$k];
 			}
 		}
+
+		$params['payment_details']['items'] = $merged;
 
 		$this->view->geopay_signature = $this->model->generate_signature($params);
 		$this->view->description = $this->model->description();
