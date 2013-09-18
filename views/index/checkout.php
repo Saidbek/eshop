@@ -34,7 +34,7 @@
 <form action="<?php echo URL; ?>index/confirm" method="post">
 	<div class="form-group">
 		<label for="phone_number">Phone number</label>
-		<input name="phone_number" type="text" class="form-control" placeholder="Enter your phone number" value="996772166163"/>
+		<input name="phone_number" type="text" class="form-control" placeholder="Enter your phone number" value="996553312818"/>
 	</div>
 
 	<input name="return_url" type="hidden" value="<?php echo $this->return_url; ?>"/>

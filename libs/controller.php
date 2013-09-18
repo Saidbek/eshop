@@ -31,4 +31,19 @@ class Controller {
 		}
 	}
 
+	function httpResponse($ch) {
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		$response = curl_exec($ch);
+
+		if(curl_error($ch))
+		{
+			curl_close($ch);
+			return curl_error($ch);
+		}
+
+		$header = curl_getinfo($ch);
+		$header['content'] = $response;
+
+		return $header['content'];
+	}
 }

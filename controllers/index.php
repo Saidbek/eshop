@@ -79,8 +79,8 @@ class Index extends Controller {
 		}
 
 		$params['payment_details']['items'] = $merged;
-
-		$this->view->geopay_signature = $this->model->generate_signature($params);
+		$normalized_string = $this->model->normalized_data($params);
+		$this->view->geopay_signature = $this->model->generate_signature($normalized_string);
 		$this->view->description = $this->model->description();
 		$this->view->params = $params;
 		$this->view->render('index/confirm');
@@ -91,4 +91,44 @@ class Index extends Controller {
 		header('Location: ../checkout');
 	}
 
+	function execute() {
+		$transaction_number = $_POST['transaction_number'];
+		$url = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
+		$attrs = array('amount' => $_POST['amount']);
+		$content = json_encode($attrs);
+		$date = gmdate("D, j M Y G:i:s")." GMT";
+
+		$normalized_string = $this->model->normalized_data_execute($transaction_number, $attrs);
+		$geopay_signature = $this->model->generate_signature($normalized_string);
+
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay '.SECRET_KEY.':'.$geopay_signature.'', 'data: '.$date.'' ,"Content-Type: application/json; charset=utf-8","Accept:application/json"));
+
+		//Can be PUT/POST/PATCH
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+
+		try {
+			$response = json_decode($this->httpResponse($ch), true);
+			if($response['status'] == 'success') {
+				header('Location: success');
+			} else {
+				header('Location: fail');
+			}
+		} catch (Exception $e) {
+			throw $e;
+		}
+	}
+
+	function fail() {
+		$this->view->query_string = $_SERVER['QUERY_STRING'];
+		$this->view->render('index/fail');
+	}
+
+	function success() {
+		$this->view->query_string = $_SERVER['QUERY_STRING'];
+		$this->view->render('index/success');
+	}
 }

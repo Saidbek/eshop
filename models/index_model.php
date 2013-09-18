@@ -98,9 +98,19 @@ class Index_Model extends Model {
 		return $host."\n".$verb."\n".$request_uri."\n".$return_string;
 	}
 
-	function generate_signature($params) {
-		$normalized_string = $this->normalized_data($params);
-		return base64_encode(hash_hmac('sha256', $normalized_string, SECRET_KEY, true));
+	function normalized_data_execute($transaction_number, $attributes) {
+		$request_uri = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
+		$host = parse_url($request_uri)['host'];
+		$date = gmdate("D, j M Y G:i:s")." GMT";
+		$verb = 'PUT';
+		$body = json_encode($attributes);
+
+		$normalized_string = $host."\n".$verb."\n".$request_uri."\n".$date."\n".$body;
+		return $normalized_string;
+	}
+
+	function generate_signature($normalized_string) {
+		return trim(base64_encode(hash_hmac('sha256', $normalized_string, SECRET_KEY, true)));
 	}
 
 	function delete($id) {
