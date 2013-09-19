@@ -35,12 +35,12 @@ class Index extends Controller {
 	}
 
 	function confirm () {
-        $params = $this->construct_hash($_POST);
-        // normalize $params
+		$params = $this->construct_hash($_POST);
+    // normalize $params
 		$normalized_string = $this->model->normalized_data($params);
-        // generate signature
+    // generate signature
 		$this->view->geopay_signature = $this->model->generate_signature($normalized_string);
-        // pass values to view
+    // pass values to view
 		$this->view->description = $this->model->description();
 		$this->view->params = $params;
 		$this->view->render('index/confirm');
@@ -56,7 +56,7 @@ class Index extends Controller {
 		$url = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
 		$attrs = array('amount' => $_POST['amount']);
 		$content = json_encode($attrs);
-		$date = gmdate("D, j M Y G:i:s")." GMT";
+		$date = gmdate("D, j M Y H:i:s")." GMT";
 
 		$normalized_string = $this->model->normalized_data_execute($transaction_number, $attrs);
 		$geopay_signature = $this->model->generate_signature($normalized_string);
@@ -64,7 +64,7 @@ class Index extends Controller {
 		$ch = curl_init($url);
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay '.SECRET_KEY.':'.$geopay_signature.'', 'data: '.$date.'' ,"Content-Type: application/json; charset=utf-8","Accept:application/json"));
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay '.$this->model->geopay_id_token().':'.$geopay_signature.'', 'date: '.$date.'' ,"Content-Type: application/json; charset=utf-8","Accept:application/json"));
 
 		//Can be PUT/POST/PATCH
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
@@ -73,8 +73,10 @@ class Index extends Controller {
 		try {
 			$response = json_decode($this->httpResponse($ch), true);
 			if($response['status'] == 'success') {
+				Session::destroy();
 				header('Location: success');
 			} else {
+				Session::destroy();
 				header('Location: fail');
 			}
 		} catch (Exception $e) {
@@ -83,12 +85,10 @@ class Index extends Controller {
 	}
 
 	function fail() {
-		$this->view->query_string = $_SERVER['QUERY_STRING'];
 		$this->view->render('index/fail');
 	}
 
 	function success() {
-		$this->view->query_string = $_SERVER['QUERY_STRING'];
 		$this->view->render('index/success');
 	}
 

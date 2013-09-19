@@ -101,9 +101,9 @@ class Index_Model extends Model {
 
 	function normalized_data_execute($transaction_number, $attributes) {
 		$request_uri = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
-        $uri = parse_url($request_uri);
+    $uri = parse_url($request_uri);
 		$host = $uri['host'].':'.$uri['port'];
-		$date = gmdate("D, j M Y G:i:s")." GMT";
+		$date = gmdate("D, j M Y H:i:s")." GMT";
 		$verb = 'PUT';
 		$body = json_encode($attributes);
 
