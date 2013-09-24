@@ -11,6 +11,29 @@ class Index_Model extends Model {
 		return $products->fetchAll(PDO::FETCH_ASSOC);
 	}
 
+	function delete($id) {
+		$cart = $_SESSION['cart'];
+		$items = explode(',', $cart);
+
+		$newcart = '';
+		foreach ($items as $item) {
+			if ($id != $item) {
+				if ($newcart != '') {
+					$newcart .= ',' . $item;
+				} else {
+					$newcart = $item;
+				}
+			}
+		}
+		$cart = $newcart;
+
+		$_SESSION['cart'] = $cart;
+	}
+
+	function save($params) {
+		$_SESSION['items'] = $params;
+	}
+
 	function checkoutList() {
 		$cart = $_SESSION['cart'];
 		$items = explode(',', $cart);
@@ -56,81 +79,14 @@ class Index_Model extends Model {
 		return number_format((float)$total, 1, '.', '');
 	}
 
-	function return_url() {
-		return RETURN_URL;
-	}
-
-	function abandon_url() {
-		return ABANDON_URL;
-	}
-
-	function reference_number() {
-		return uniqid();
-	}
-
-	function geopay_id_token() {
-		return GEOPAY_ID_TOKEN;
-	}
-
-	function locale() {
-		return LOCALE;
-	}
-
-	function description() {
-		return DESCRIPTION;
-	}
-
-	function tax() {
-		return TAX;
-	}
-
-	function shipping() {
-		return SHIPPING;
-	}
-
 	function normalized_data($params) {
 		$request_uri = AUTH_URL."customer/authorizations";
-        $uri = parse_url($request_uri);
-		$host = $uri['host'].':'.$uri['port'];
+		$uri = parse_url($request_uri);
+		$host = empty($uri['port']) ? $uri['host'] : $uri['host'].':'.$uri['port'];
 		$verb = 'POST';
 		$encoded_string = http_build_query($params);
 
 		$return_string = preg_replace('/%5B\d+\%5D/', "%5B%5D", $encoded_string);
 		return $host."\n".$verb."\n".$request_uri."\n".$return_string;
-	}
-
-	function normalized_data_execute($transaction_number, $attributes) {
-		$request_uri = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
-    $uri = parse_url($request_uri);
-		$host = $uri['host'].':'.$uri['port'];
-		$date = gmdate("D, j M Y H:i:s")." GMT";
-		$verb = 'PUT';
-		$body = json_encode($attributes);
-
-		$normalized_string = $host."\n".$verb."\n".$request_uri."\n".$date."\n".$body;
-		return $normalized_string;
-	}
-
-	function generate_signature($normalized_string) {
-		return trim(base64_encode(hash_hmac('sha256', $normalized_string, SECRET_KEY, true)));
-	}
-
-	function delete($id) {
-		$cart = $_SESSION['cart'];
-		$items = explode(',', $cart);
-
-		$newcart = '';
-		foreach ($items as $item) {
-			if ($id != $item) {
-				if ($newcart != '') {
-					$newcart .= ',' . $item;
-				} else {
-					$newcart = $item;
-				}
-			}
-		}
-		$cart = $newcart;
-
-		$_SESSION['cart'] = $cart;
 	}
 }

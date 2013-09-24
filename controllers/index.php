@@ -36,6 +36,8 @@ class Index extends Controller {
 
 	function confirm () {
 		$params = $this->construct_hash($_POST);
+		$this->model->save($params);
+
     // normalize $params
 		$normalized_string = $this->model->normalized_data($params);
     // generate signature
@@ -51,39 +53,6 @@ class Index extends Controller {
 		header('Location: ../checkout');
 	}
 
-	function execute() {
-		$transaction_number = $_POST['transaction_number'];
-		$url = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
-		$attrs = array('amount' => $_POST['amount']);
-		$content = json_encode($attrs);
-		$date = gmdate("D, j M Y H:i:s")." GMT";
-
-		$normalized_string = $this->model->normalized_data_execute($transaction_number, $attrs);
-		$geopay_signature = $this->model->generate_signature($normalized_string);
-
-		$ch = curl_init($url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay '.$this->model->geopay_id_token().':'.$geopay_signature.'', 'date: '.$date.'' ,"Content-Type: application/json; charset=utf-8","Accept:application/json"));
-
-		//Can be PUT/POST/PATCH
-		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
-
-		try {
-			$response = json_decode($this->httpResponse($ch), true);
-			if($response['status'] == 'success') {
-				Session::destroy();
-				header('Location: success');
-			} else {
-				Session::destroy();
-				header('Location: fail');
-			}
-		} catch (Exception $e) {
-			throw $e;
-		}
-	}
-
 	function fail() {
 		$this->view->render('index/fail');
 	}
@@ -92,38 +61,38 @@ class Index extends Controller {
 		$this->view->render('index/success');
 	}
 
-    private function construct_hash($array) {
-        $params = array(
-            "abandon_url"=>$array['abandon_url'],
-            "geopay_id_token"=>$array['geopay_id_token'],
-            "locale"=>$array['locale'],
-            "payment_details"=>
-            array(
-                "description"=>$array['payment_details']['description'],
-                "items" => array(),
-                "shipping"=>$array['payment_details']['shipping'],
-                "subtotal"=>$array['payment_details']['subtotal'],
-                "tax"=>$array['payment_details']['tax']
-            ),
-            "phone_number"=>$array['phone_number'],
-            "reference_number"=>$array['reference_number'],
-            "return_url"=>$array['return_url'],
-            "transaction_amount"=>$array['transaction_amount']
-        );
+	private function construct_hash($array) {
+		$params = array(
+			"abandon_url"=>$array['abandon_url'],
+			"geopay_id_token"=>$array['geopay_id_token'],
+			"locale"=>$array['locale'],
+			"payment_details"=>
+			array(
+				"description"=>$array['payment_details']['description'],
+				"items" => array(),
+				"shipping"=>$array['payment_details']['shipping'],
+				"subtotal"=>$array['payment_details']['subtotal'],
+				"tax"=>$array['payment_details']['tax']
+			),
+			"phone_number"=>$array['phone_number'],
+			"reference_number"=>$array['reference_number'],
+			"return_url"=>$array['return_url'],
+			"transaction_amount"=>$array['transaction_amount']
+		);
 
-        $amounts = $_POST['a'];
-        $descs = $_POST['d'];
-        $merged = array();
-        $i = 0;
+		$amounts = $_POST['a'];
+		$descs = $_POST['d'];
+		$merged = array();
+		$i = 0;
 
-        foreach ($amounts as $k=>$v) {
-            $merged[$i]['amount'] = $v;
-            if (isset($descs[$k])) {
-                $merged[$i++]['description'] = $descs[$k];
-            }
-        }
+		foreach ($amounts as $k=>$v) {
+			$merged[$i]['amount'] = $v;
+			if (isset($descs[$k])) {
+					$merged[$i++]['description'] = $descs[$k];
+			}
+		}
 
-        $params['payment_details']['items'] = $merged;
-        return $params;
-    }
+		$params['payment_details']['items'] = $merged;
+		return $params;
+	}
 }
