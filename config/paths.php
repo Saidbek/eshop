@@ -1,4 +1,4 @@
 <?php
 
-define('URL', 'http://workspace/eshop/');
+define('URL', 'http://eshop/');
 define('AUTH_URL', 'http://localhost:3009/');

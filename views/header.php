@@ -5,12 +5,6 @@
     <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="<?php echo URL; ?>public/css/bootstrap.min.css">
 	<link rel="stylesheet" type="text/css" href="<?php echo URL; ?>public/css/style.css">
-	<script type="text/javascript" src="<?php echo URL; ?>public/js/jquery-1.10.2.min.js"></script>
-	<script type="text/javascript" src="<?php echo URL; ?>public/js/bootstrap.js"></script>
-	<script type="text/javascript" src="<?php echo URL; ?>public/js/bootstrap.min.js"></script>
-	
-	<script>
-	</script>
 </head>
 <body>
 

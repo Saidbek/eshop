@@ -3,7 +3,7 @@
 ##### Virtual host configs
 
 ```
-<VirtualHost *:80>                                                                                                                                                 
+<VirtualHost *:80>
   ServerName eshop                                                              
   DocumentRoot /var/www/eshop
 
@@ -16,7 +16,7 @@
  </VirtualHost>
 ```
 
-##### modify /etc/hosts
+##### Modify /etc/hosts
 ```
   127.0.0.1 eshop
 ```
