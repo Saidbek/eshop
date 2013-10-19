@@ -14,7 +14,7 @@
 			<strong>Your shopping cart</strong>
 
 			<div class="items">
-				<?php echo Controller::showCart(); ?><?php ?>
+				<?= Controller::showCart(); ?>
 			</div>
 		</div>
 
