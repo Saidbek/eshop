@@ -31,6 +31,7 @@ class Controller {
 		}
 	}
 
+	// not used, replaced with HTTPRequest
 	function httpResponse($ch) {
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		$response = curl_exec($ch);

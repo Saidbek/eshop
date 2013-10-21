@@ -19,29 +19,28 @@ class Success extends Controller {
 			$content = json_encode($attrs);
 			$geopay_signature = $this->model->generate_signature($normalized_string);
 
-			$ch = curl_init($url);
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay '.$this->model->geopay_id_token().':'.$geopay_signature.'', 'date: '.$date.'' ,"Content-Type: application/json; charset=utf-8","Accept:application/json"));
+			$request = new HTTPRequest($url, HTTP_METH_PUT);
+			$request->setPutData($content);
+			$request->setHeaders(array('authorization' => 'GeoPay '.$this->model->geopay_id_token().':'.$geopay_signature, "date" => $date, "Content-Type" => "application/json; charset=utf-8", "Accept" => "application/json"));
 
-			//Can be PUT/POST/PATCH
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "PUT");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+			# Send our request
+			$request->send();
 
-			try {
-				$response = json_decode($this->httpResponse($ch), true);
-				if($response['status'] == 'success') {
-					Session::destroy();
-					header('Location: index/success');
-				} else {
-					Session::destroy();
-					header('Location: index/fail');
-				}
-			} catch (Exception $e) {
-				throw $e;
+			# Get the response
+			$response = $request->getResponseBody();
+
+//			error_log('--- response_header '.print_r($request->getResponseHeader(),true));
+//			error_log('--- response_body '.print_r($request->getResponseBody(),true));
+//			error_log('--- headers '.print_r($request->getHeaders(),true));
+//			error_log('--- put_data '.$request->getPutData());
+
+			if (strpos($response, 'success') !== FALSE) {
+				Session::destroy();
+				header('Location: index/success');
+			} else {
+				Session::destroy();
+				header('Location: index/fail');
 			}
-		} else {
-
 		}
 	}
 }
