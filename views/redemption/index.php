@@ -13,7 +13,7 @@
 
 	<div class="form-group">
 		<label for="reference_number">Reference number</label>
-		<input name="reference_number" type="text" class="form-control" value="<?= uniqid(); ?>">
+		<input name="reference_number" type="text" class="form-control" value="<?php echo uniqid(); ?>">
 	</div>
 
 	<input type="submit" class="btn btn-primary btn-sm" value="Submit" />
