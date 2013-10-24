@@ -1,4 +1,4 @@
-<h4 class="text-primary">Value Redemption</h4>
+<h4 class="text-primary">Value Redemption / Create</h4>
 
 <form action="<?php echo URL; ?>redemption/create" method="post">
 	<div class="form-group">

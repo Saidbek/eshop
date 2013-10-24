@@ -1,1 +1,3 @@
-<h4><?php echo $this->msg; ?></h4>
+<h3 class="text-danger">404 Error</h3>
+
+<pre>This page does not exist.</pre>

@@ -39,7 +39,7 @@ class Index extends Controller {
 		$this->model->save($params);
 
     // normalize $params
-		$normalized_string = $this->model->normalized_data($params);
+		$normalized_string = $this->model->normalized_data_auth($params);
     // generate signature
 		$this->view->geopay_signature = $this->model->generate_signature($normalized_string);
     // pass values to view

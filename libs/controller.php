@@ -19,7 +19,7 @@ class Controller {
 	}
 
 	public static function showCart() {
-		if (!$_SESSION) {
+		if (!$_SESSION['cart']) {
 			return '<p>You have no items in your shopping cart</p>';
 		} else {
 			// Parse the cart session variable
@@ -27,20 +27,5 @@ class Controller {
 			$s = (count($items) > 1) ? 's' : '';
 			return '<p>You have <a href="'.URL.'index/checkout">' . count($items) . ' item' . $s . ' in your shopping cart</a></p>';
 		}
-	}
-
-	// not used, replaced with HTTPRequest
-	function httpResponse($ch) {
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		$response = curl_exec($ch);
-
-		if(curl_error($ch)) {
-			curl_close($ch);
-			return curl_error($ch);
-		}
-
-		$header = curl_getinfo($ch);
-		$header['content'] = $response;
-		return $header['content'];
 	}
 }

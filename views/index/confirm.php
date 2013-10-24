@@ -34,15 +34,19 @@
 	<input name="authorization[return_url]" type="hidden" value="<?php echo $this->params['return_url']; ?>"/>
 	<input name="authorization[abandon_url]" type="hidden" value="<?php echo $this->params['abandon_url']; ?>"/>
 	<input name="authorization[reference_number]" type="hidden" value="<?php echo $this->params['reference_number']; ?>"/>
-	<input name="authorization[transaction_amount]" type="hidden" value="<?php echo $this->params['transaction_amount']; ?>"/>
+	<input name="authorization[transaction_amount]" type="hidden"
+				 value="<?php echo $this->params['transaction_amount']; ?>"/>
 	<input name="authorization[geopay_id_token]" type="hidden" value="<?php echo $this->params['geopay_id_token']; ?>"/>
 	<input name="authorization[phone_number]" type="hidden" value="<?php echo $this->params['phone_number']; ?>"/>
 	<input name="authorization[locale]" type="hidden" value="<?php echo $this->params['locale']; ?>"/>
 
 	<input name="authorization[payment_details[description]]" type="hidden" value="<?php echo $this->description; ?>"/>
-	<input name="authorization[payment_details[subtotal]]" type="hidden" value="<?php echo $this->params['payment_details']['subtotal']; ?>"/>
-	<input name="authorization[payment_details[tax]]" type="hidden" value="<?php echo $this->params['payment_details']['tax']; ?>"/>
-	<input name="authorization[payment_details[shipping]]" type="hidden" value="<?php echo $this->params['payment_details']['shipping']; ?>"/>
+	<input name="authorization[payment_details[subtotal]]" type="hidden"
+				 value="<?php echo $this->params['payment_details']['subtotal']; ?>"/>
+	<input name="authorization[payment_details[tax]]" type="hidden"
+				 value="<?php echo $this->params['payment_details']['tax']; ?>"/>
+	<input name="authorization[payment_details[shipping]]" type="hidden"
+				 value="<?php echo $this->params['payment_details']['shipping']; ?>"/>
 	<?php
 	foreach ($this->params['payment_details']['items'] as $value) {
 		echo '<input name="authorization[payment_details][items][][description]" type="hidden" value="' . $value['description'] . '" />';
