@@ -29,11 +29,6 @@ class Success extends Controller {
 			# Get the response
 			$response = $request->getResponseBody();
 
-//			error_log('--- response_header '.print_r($request->getResponseHeader(),true));
-//			error_log('--- response_body '.print_r($request->getResponseBody(),true));
-//			error_log('--- headers '.print_r($request->getHeaders(),true));
-//			error_log('--- put_data '.$request->getPutData());
-
 			if (strpos($response, 'success') !== FALSE) {
 				Session::destroy();
 				header('Location: index/success');

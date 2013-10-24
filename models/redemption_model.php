@@ -1,6 +1,6 @@
 <?php
 
-class Success_Model extends Model {
+class Redemption_Model extends Model {
 
 	function __construct() {
 		parent::__construct();

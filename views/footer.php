@@ -7,9 +7,10 @@
 
         <div class="links">
             <p>
-                <a href="<?php echo URL; ?>">Main page</a> |
-                <a href="<?php echo URL; ?>help">Help</a>
-            </p>
+                <a href="<?php echo URL; ?>">Main</a> |
+                <a href="<?php echo URL; ?>redemption">Redemption</a> |
+							<a href="<?php echo URL; ?>help">Help</a>
+						</p>
         </div>
 	</footer>
 

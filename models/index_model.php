@@ -78,15 +78,4 @@ class Index_Model extends Model {
 		$total = $sum + $this->shipping();
 		return number_format((float)$total, 1, '.', '');
 	}
-
-	function normalized_data($params) {
-		$request_uri = AUTH_URL."customer/authorizations";
-		$uri = parse_url($request_uri);
-		$host = empty($uri['port']) ? $uri['host'] : $uri['host'].':'.$uri['port'];
-		$verb = 'POST';
-		$encoded_string = http_build_query($params);
-
-		$return_string = preg_replace('/%5B\d+\%5D/', "%5B%5D", $encoded_string);
-		return $host."\n".$verb."\n".$request_uri."\n".$return_string;
-	}
 }

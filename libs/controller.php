@@ -19,13 +19,11 @@ class Controller {
 	}
 
 	public static function showCart() {
-		$cart = $_SESSION['cart'];
-
-		if (!$cart) {
+		if (!$_SESSION) {
 			return '<p>You have no items in your shopping cart</p>';
 		} else {
 			// Parse the cart session variable
-			$items = explode(',', $cart);
+			$items = explode(',', $_SESSION['cart']);
 			$s = (count($items) > 1) ? 's' : '';
 			return '<p>You have <a href="'.URL.'index/checkout">' . count($items) . ' item' . $s . ' in your shopping cart</a></p>';
 		}

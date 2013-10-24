@@ -41,4 +41,39 @@ class Model {
 	function geopay_id_token() {
 		return GEOPAY_ID_TOKEN;
 	}
+
+	function normalized_data($params) {
+		$request_uri = AUTH_URL."customer/authorizations";
+		$uri = parse_url($request_uri);
+		$host = empty($uri['port']) ? $uri['host'] : $uri['host'].':'.$uri['port'];
+		$verb = 'POST';
+		$encoded_string = http_build_query($params);
+
+		$return_string = preg_replace('/%5B\d+\%5D/', "%5B%5D", $encoded_string);
+		return $host."\n".$verb."\n".$request_uri."\n".$return_string;
+	}
+
+	function normalized_data_execute($transaction_number, $attributes) {
+		$request_uri = AUTH_URL.'partner/payments/'.$transaction_number.'/execute';
+		$uri = parse_url($request_uri);
+		$host = empty($uri['port']) ? $uri['host'] : $uri['host'].':'.$uri['port'];
+		$date = gmdate("D, j M Y H:i:s")." GMT";
+		$verb = 'PUT';
+		$body = json_encode($attributes);
+
+		$normalized_string = $host."\n".$verb."\n".$request_uri."\n".$date."\n".$body;
+		return $normalized_string;
+	}
+
+	function normalized_data_create($params) {
+		$request_uri = AUTH_URL.'partner/payments';
+		$uri = parse_url($request_uri);
+		$host = empty($uri['port']) ? $uri['host'] : $uri['host'].':'.$uri['port'];
+		$verb = 'POST';
+		$date = gmdate("D, j M Y H:i:s")." GMT";
+		$body = json_encode($params);
+
+		$normalized_string = $host."\n".$verb."\n".$request_uri."\n".$date."\n".$body;
+		return $normalized_string;
+	}
 }
