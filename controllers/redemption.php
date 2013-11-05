@@ -16,18 +16,8 @@ class Redemption extends Controller
 
 	function create()
 	{
-		$url = AUTH_URL . 'partner/payments';
-		$date = gmdate("D, j M Y H:i:s") . " GMT";
-		$normalized_string = $this->model->normalized_data_create($_POST);
-		$content = json_encode($_POST);
-		$geopay_signature = $this->model->generate_signature($normalized_string);
-
-		$request = new HTTPRequest($url, HTTP_METH_POST);
-		$request->setRawPostData($content);
-		$request->setHeaders(array('authorization' => 'GeoPay ' . $this->model->geopay_id_token() . ':' . $geopay_signature, "date" => $date, "Content-Type" => "application/json; charset=utf-8", "Accept" => "application/json"));
-		$request->send();
-
-		$response = $request->getResponseBody();
+		$geopay = new GeoPay();
+		$response = $geopay->send_create_request();
 		$this->setValue(json_decode($response)->transaction_number);
 
 		if (strpos($response, 'pending') !== FALSE) {
@@ -39,15 +29,8 @@ class Redemption extends Controller
 
 	function show($id)
 	{
-		$url = AUTH_URL . 'partner/payments/' . $id;
-		$date = gmdate("D, j M Y H:i:s") . " GMT";
-		$normalized_string = $this->model->normalized_data_show($id);
-		$geopay_signature = $this->model->generate_signature($normalized_string);
-
-		$request = new HTTPRequest($url, HTTP_METH_GET);
-		$request->setHeaders(array('authorization' => 'GeoPay ' . $this->model->geopay_id_token() . ':' . $geopay_signature, "date" => $date, "Content-Type" => "application/json; charset=utf-8", "Accept" => "application/json"));
-		$request->send();
-		$response = $request->getResponseBody();
+		$geopay = new GeoPay();
+		$response = $geopay->send_show_request($id);
 
 		if (strpos($response, 'approved_pending') !== FALSE) {
 			$this->view->render('redemption/show', array('response' => $response, 'transaction_number' => $id));
@@ -58,18 +41,9 @@ class Redemption extends Controller
 
 	function execute($id)
 	{
-		$url = AUTH_URL . 'partner/payments/' . $id . '/execute';
-		$attrs = array('amount' => $_GET["amount"]);
-		$date = gmdate("D, j M Y H:i:s") . " GMT";
-		$normalized_string = $this->model->normalized_data_execute($id, $attrs);
-		$content = json_encode($attrs);
-		$geopay_signature = $this->model->generate_signature($normalized_string);
-
-		$request = new HTTPRequest($url, HTTP_METH_PUT);
-		$request->setPutData($content);
-		$request->setHeaders(array('authorization' => 'GeoPay ' . $this->model->geopay_id_token() . ':' . $geopay_signature, "date" => $date, "Content-Type" => "application/json; charset=utf-8", "Accept" => "application/json"));
-		$request->send();
-		$response = $request->getResponseBody();
+		$geopay = new GeoPay();
+		$transaction_amount = $_GET["amount"];
+		$response = $geopay->send_execute_request($id, $transaction_amount);
 
 		if (strpos($response, 'success') !== FALSE) {
 			$this->view->render('index/success');
@@ -80,15 +54,8 @@ class Redemption extends Controller
 
 	function cancel($id)
 	{
-		$url = AUTH_URL . 'partner/payments/' . $id . '/cancel';
-		$date = gmdate("D, j M Y H:i:s") . " GMT";
-		$normalized_string = $this->model->normalized_data_put($id);
-		$geopay_signature = $this->model->generate_signature($normalized_string);
-
-		$request = new HTTPRequest($url, HTTP_METH_PUT);
-		$request->setHeaders(array('authorization' => 'GeoPay ' . $this->model->geopay_id_token() . ':' . $geopay_signature, "date" => $date, "Content-Type" => "application/json; charset=utf-8", "Accept" => "application/json"));
-		$request->send();
-		$response = $request->getResponseBody();
+		$geopay = new GeoPay();
+		$response = $geopay->send_cancel_request($id);
 
 		if (strpos($response, 'success') !== FALSE) {
 			$this->view->render('index/success');

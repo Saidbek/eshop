@@ -32,32 +32,28 @@
 </table>
 
 <form action="<?php echo URL; ?>index/confirm" method="post">
+	<input name="authorization[return_url]" type="hidden" value="<?php echo $this->return_url; ?>"/>
+	<input name="authorization[abandon_url]" type="hidden" value="<?php echo $this->abandon_url; ?>"/>
+	<input name="authorization[reference_number]" type="hidden" value="<?php echo $this->reference_number; ?>"/>
+	<input name="authorization[transaction_amount]" type="hidden" value="<?php echo $this->transaction_amount; ?>"/>
+	<input name="authorization[geopay_id_token]" type="hidden" value="<?php echo $this->geopay_id_token; ?>"/>
 	<div class="form-group">
 		<label for="phone_number">Phone number</label>
-		<input name="phone_number" type="text" class="form-control" placeholder="Enter your phone number" value="996000123456"/>
+		<input name="authorization[phone_number]" type="text" class="form-control" value="996000123456"/>
 	</div>
-
-	<input name="return_url" type="hidden" value="<?php echo $this->return_url; ?>"/>
-	<input name="abandon_url" type="hidden" value="<?php echo $this->abandon_url; ?>"/>
-	<input name="reference_number" type="hidden" value="<?php echo $this->reference_number; ?>"/>
-	<input name="transaction_amount" type="hidden" value="<?php echo $this->total_amount; ?>"/>
-	<input name="geopay_id_token" type="hidden" value="<?php echo $this->geopay_id_token; ?>"/>
-	<input name="locale" type="hidden" value="<?php echo $this->locale; ?>"/>
-
-	<input name="payment_details[description]" type="hidden" value="<?php echo $this->description; ?>"/>
-	<input name="payment_details[subtotal]" type="hidden" value="<?php echo $this->subtotal; ?>"/>
-	<input name="payment_details[tax]" type="hidden" value="<?php echo $this->tax; ?>"/>
-	<input name="payment_details[shipping]" type="hidden" value="<?php echo $this->shipping; ?>"/>
-
+	<input name="authorization[locale]" type="hidden" value="<?php echo $this->locale; ?>"/>
+	<input name="authorization[payment_details][description]" type="hidden" value="<?php echo $this->description; ?>"/>
 	<?php
 	foreach ($this->items as $items) {
 		foreach ($items as $value) {
-			echo '<input name="d[]" type="hidden" value="' . $value['description'] . '" />';
-			echo '<input name="a[]" type="hidden" value="' . $value['amount'] . '" />';
+			echo '<input name="authorization[payment_details][items]['.$value["id"].'][amount]" type="hidden" value="'.$value['amount'].'">';
+			echo '<input name="authorization[payment_details][items]['.$value["id"].'][description]" type="hidden" value="'.$value['description'].'">';
 		}
 	}
 	?>
-
+	<input name="authorization[payment_details][shipping]" type="hidden" value="<?php echo $this->shipping; ?>"/>
+	<input name="authorization[payment_details][subtotal]" type="hidden" value="<?php echo $this->subtotal; ?>"/>
+	<input name="authorization[payment_details][tax]" type="hidden" value="<?php echo $this->tax; ?>"/>
 	<input type="submit" class="btn btn-primary btn-sm" value="Checkout" />
 	<a href="<?php echo URL; ?>index" class="btn btn-primary btn-sm">Continue shopping</a>
 </form>
