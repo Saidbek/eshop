@@ -25,7 +25,8 @@ class GeoPay
 		$url = GEOPAY_URL . 'partner/payments';
 		$normalized_string = $this->normalized_data_create($url, $_POST);
 		$content = json_encode($_POST);
-		$response = $this->http_request($normalized_string, $url, HTTP_METH_POST, $content);
+//	$response = $this->http_request($normalized_string, $url, HTTP_METH_POST, $content);
+		$response = $this->curl_request($normalized_string, $url, "POST", $content);
 		return $response;
 	}
 
@@ -35,7 +36,8 @@ class GeoPay
 		$params = array('amount' => $transaction_amount);
 		$normalized_string = $this->normalized_data_execute($url, $params);
 		$content = json_encode($params);
-		$response = $this->http_request($normalized_string, $url, HTTP_METH_PUT, $content);
+//	$response = $this->http_request($normalized_string, $url, HTTP_METH_PUT, $content);
+		$response = $this->curl_request($normalized_string, $url, "PUT", $content);
 		return $response;
 	}
 
@@ -43,7 +45,8 @@ class GeoPay
 	{
 		$url = GEOPAY_URL . 'partner/payments/' . $id;
 		$normalized_string = $this->normalized_data_show($url);
-		$response = $this->http_request($normalized_string, $url, HTTP_METH_GET);
+//		$response = $this->http_request($normalized_string, $url, HTTP_METH_GET);
+		$response = $this->curl_request($normalized_string, $url, "GET");
 		return $response;
 	}
 
@@ -51,7 +54,8 @@ class GeoPay
 	{
 		$url = GEOPAY_URL . 'partner/payments/' . $id . '/cancel';
 		$normalized_string = $this->normalized_data_cancel($url);
-		$response = $this->http_request($normalized_string, $url, HTTP_METH_PUT);
+//		$response = $this->http_request($normalized_string, $url, HTTP_METH_PUT);
+		$response = $this->curl_request($normalized_string, $url, "PUT");
 		return $response;
 	}
 
@@ -125,5 +129,30 @@ class GeoPay
 		$request->setHeaders(array('authorization' => 'GeoPay ' . GEOPAY_ID_TOKEN . ':' . $geopay_signature, "date" => $date, "Content-Type" => "application/json; charset=utf-8", "Accept" => "application/json"));
 		$request->send();
 		return $request->getResponseBody();
+	}
+
+	private function curl_request($normalized_string, $url, $verb, $content = NULL)
+	{
+		$date = gmdate("D, j M Y H:i:s") . " GMT";
+		$geopay_signature = $this->generate_signature($normalized_string);
+		$ch = curl_init($url);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay ' . GEOPAY_ID_TOKEN . ':' . $geopay_signature . '', 'date: ' . $date . '', "Content-Type: application/json; charset=utf-8", "Accept:application/json"));
+
+		//Can be PUT/POST/PATCH
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		$response = curl_exec($ch);
+
+		if (curl_error($ch)) {
+			curl_close($ch);
+			return curl_error($ch);
+		}
+
+		$header = curl_getinfo($ch);
+		$header['content'] = $response;
+		return json_decode($header['content'], true);
 	}
 }
