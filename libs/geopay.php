@@ -136,6 +136,7 @@ class GeoPay
 		$date = gmdate("D, j M Y H:i:s") . " GMT";
 		$geopay_signature = $this->generate_signature($normalized_string);
 		$ch = curl_init($url);
+		$redirects = 0;
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('authorization: GeoPay ' . GEOPAY_ID_TOKEN . ':' . $geopay_signature . '', 'date: ' . $date . '', "Content-Type: application/json; charset=utf-8", "Accept:application/json"));
@@ -143,9 +144,21 @@ class GeoPay
 		//Can be PUT/POST/PATCH
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, $verb);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
-		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-		$response = curl_exec($ch);
 
+		$response = curl_exec($ch);
+		$http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		if ($http_code == 301 || $http_code == 302) {
+			list($header) = explode("\r\n\r\n", $response, 2);
+			$matches = array();
+			preg_match('/(Location:|URI:)(.*?)\n/', $header, $matches);
+			$url = trim(array_pop($matches));
+			$url_parsed = parse_url($url);
+			if (isset($url_parsed)) {
+				curl_setopt($ch, CURLOPT_URL, $url);
+				$redirects++;
+				return $this->curl_request($normalized_string, $url, $verb, $content = NULL);
+			}
+		}
 		if (curl_error($ch)) {
 			curl_close($ch);
 			return curl_error($ch);

@@ -18,10 +18,13 @@ class Redemption extends Controller
 	{
 		$geopay = new GeoPay();
 		$response = $geopay->send_create_request();
-		$this->setValue(json_decode($response)->transaction_number);
+		$this->setValue($response['transaction_number']);
 
-		if (strpos($response, 'pending') !== FALSE) {
-			$this->view->render('redemption/pending', array('response' => $response, 'transaction_number' => $this->getValue()));
+		if ($response['status'] == 'pending') {
+//			HTTPRequest
+//			$this->view->render('redemption/pending', array('response' => $response, 'transaction_number' => $this->getValue()));
+//			CURL
+			$this->view->render('redemption/pending', array('response' => $response, 'transaction_number' => $response["transaction_number"]));
 		} else {
 			$this->view->render('index/fail');
 		}
@@ -32,7 +35,7 @@ class Redemption extends Controller
 		$geopay = new GeoPay();
 		$response = $geopay->send_show_request($id);
 
-		if (strpos($response, 'approved_pending') !== FALSE) {
+		if ($response['status'] == 'approved_pending') {
 			$this->view->render('redemption/show', array('response' => $response, 'transaction_number' => $id));
 		} else {
 			$this->view->render('redemption/pending', array('response' => $response, 'transaction_number' => $id));
@@ -45,7 +48,7 @@ class Redemption extends Controller
 		$transaction_amount = $_GET["amount"];
 		$response = $geopay->send_execute_request($id, $transaction_amount);
 
-		if (strpos($response, 'success') !== FALSE) {
+		if ($response['status'] == 'success') {
 			$this->view->render('index/success');
 		} else {
 			$this->view->render('index/fail');
@@ -57,7 +60,7 @@ class Redemption extends Controller
 		$geopay = new GeoPay();
 		$response = $geopay->send_cancel_request($id);
 
-		if (strpos($response, 'success') !== FALSE) {
+		if ($response['status'] == 'success') {
 			$this->view->render('index/success');
 		} else {
 			$this->view->render('index/fail');

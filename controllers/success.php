@@ -16,7 +16,7 @@ class Success extends Controller
 		$transaction_amount = $this->model->total_amount($checkout_list);
 		$response = $geopay->send_execute_request($transaction_number, $transaction_amount);
 
-		if (strpos($response, 'success') !== FALSE) {
+		if ($response['status'] == 'success') {
 			Session::destroy();
 			header('Location: index/success');
 		} else {
