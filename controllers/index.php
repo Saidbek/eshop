@@ -50,6 +50,8 @@ class Index extends Controller {
 	}
 
 	function fail() {
+		$geopay = new GeoPay();
+		$this->view->error = $geopay->error($_GET['error_code']);
 		$this->view->render('index/fail');
 	}
 

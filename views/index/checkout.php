@@ -16,7 +16,7 @@
 			echo '<tr>';
 			echo '<td>' . $value['id'] . '</td>';
 			echo '<td>' . $value['description'] . '</td>';
-			echo '<td>' . $value['amount'] . '$</td>';
+			echo '<td>' . $value['amount'] . '</td>';
 			echo '<td><a href="' . URL . 'index/destroy/' . $value['id'] . '" class="btn btn-xs btn-danger">Remove</a></td>';
 			echo '</tr>';
 		}
@@ -25,7 +25,7 @@
 	<tr>
 		<td></td>
 		<td></td>
-		<td><?php echo $this->subtotal; ?>$</td>
+		<td><?php echo $this->subtotal; ?></td>
 		<td></td>
 	</tr>
 	</tbody>

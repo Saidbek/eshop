@@ -17,17 +17,17 @@
 		echo '<tr>';
 		echo '<td>' . $a++ . '</td>';
 		echo '<td>' . $value['description'] . '</td>';
-		echo '<td>' . $value['amount'] . '$</td>';
+		echo '<td>' . $value['amount'] . '</td>';
 		echo '</tr>';
 	}
 	?>
 </table>
 
-<p><strong>Subtotal: </strong><?php echo $this->params['payment_details']['subtotal']; ?>$</p>
-<p><strong>Tax: </strong><?php echo $this->params['payment_details']['tax']; ?>$</p>
-<p><strong>Shipping: </strong><?php echo $this->params['payment_details']['shipping']; ?>$</p>
+<p><strong>Subtotal: </strong><?php echo $this->params['payment_details']['subtotal']; ?></p>
+<p><strong>Tax: </strong><?php echo $this->params['payment_details']['tax']; ?></p>
+<p><strong>Shipping: </strong><?php echo $this->params['payment_details']['shipping']; ?></p>
 <p><strong>Phone number: </strong><?php echo $this->params['phone_number']; ?></p>
-<p><strong>Total amount: </strong><?php echo $this->params['transaction_amount']; ?>$</p>
+<p><strong>Total amount: </strong><?php echo $this->params['transaction_amount']; ?></p>
 
 <form role="form" action="<?php echo GEOPAY_URL; ?>customer/authorizations" method="post">
 	<input name="authorization[geopay_signature]" type="hidden" value="<?php echo $this->geopay_signature; ?>"/>
